@@ -1,5 +1,6 @@
 TwitterApp::Application.routes.draw do
-  get 'sessions/callback', :to => 'sessions#callback', :as => 'callback'
-  resources :sessions
   root :to => 'sessions#new'
+  get '/auth/twitter/callback', :to => 'sessions#create', :as => :callback
+  get '/auth/failure', :to => 'sessions#error', :as => :error
+  delete '/signout', :to => 'sessions#destroy', :as => :signout
 end

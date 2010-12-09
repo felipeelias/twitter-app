@@ -4,25 +4,16 @@ class SessionsController < ApplicationController
   end
 
   def create
-    request_token = oauth_consumer.get_request_token(:oauth_callback => callback_url)
-    session['request_token'] = request_token.token
-    session['request_secret'] = request_token.secret
-    redirect_to request_token.authorize_url
+    sign_in(request.env['omniauth.auth']['extra']['user_hash'])
+    redirect_to root_path, :notice => "Signed in to Twitter!"
+  end
+
+  def error
+    redirect_to root_path, :alert => "Sign in with Twitter failed!"
   end
 
   def destroy
     reset_session
-    redirect_to new_session_path
-  end
-
-  def callback
-    request_token = OAuth::RequestToken.new(oauth_consumer, session['request_token'], session['request_secret'])
-    access_token = request_token.get_access_token(:oauth_verifier => params[:oauth_verifier])
-    reset_session
-    session['access_token'] = access_token.token
-    session['access_secret'] = access_token.secret
-    user = client.verify_credentials
-    sign_in(user)
-    redirect_back_or root_path
+    redirect_to root_path, :notice => "Signed out!"
   end
 end

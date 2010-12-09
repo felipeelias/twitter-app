@@ -23,7 +23,7 @@ module Twitter
     end
 
     def sign_in(user)
-      session[:screen_name] = user.screen_name if user
+      session[:screen_name] = user['screen_name'] if user
     end
 
     def redirect_back_or(default)
